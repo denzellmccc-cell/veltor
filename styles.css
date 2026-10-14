@@ -54,3 +54,5 @@
 .community input[type=checkbox],.admin-card input[type=checkbox]{width:auto;margin:0 8px 0 0}
 .community label.check{display:flex;align-items:flex-start;font-size:13px;margin:6px 0 10px;line-height:1.4}
 .post>.filter.danger{margin:10px 0}
+.post-img[hidden]{display:none}
+.composer input[type=file]{padding:8px}
