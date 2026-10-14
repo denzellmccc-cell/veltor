@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VÉLTOR — Comunidad</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="VÉLTOR"><span class="brand-mark">V</span><span><strong>VÉLTOR</strong><small>COMUNIDAD</small></span></a>
+    <nav class="main-nav"><a href="index.html">← Noticias</a></nav>
+  </header>
+  <main class="community">
+    <section id="setup-warning" class="admin-card" hidden>
+      <h2>Falta configurar Firebase</h2>
+      <p>Revisa <b>firebase-config.js</b> y <b>LEEME_COMUNIDAD.md</b>.</p>
+    </section>
+    <div id="app">
+      <section id="login-box" class="admin-card" hidden>
+        <h2>Únete a la comunidad</h2>
+        <p>Para personas de <b>13 años o más</b>. Inicia sesión para publicar, dar likes y agregar amigos.</p>
+        <label>Tu edad<select id="age-group"><option value="">Elige tu rango de edad…</option><option value="under13">Menos de 13 años</option><option value="minor">Entre 13 y 17 años</option><option value="adult">18 años o más</option></select></label>
+        <label class="check"><input id="age-ok" type="checkbox"> Declaro que mi edad es la indicada y acepto los <a href="terminos.html" target="_blank">Términos y normas</a> y la <a href="privacidad.html" target="_blank">Política de privacidad</a>.</label>
+        <div class="login-buttons">
+          <button id="login-google" class="button button-red" type="button">Continuar con Google</button>
+        </div>
+        <p id="login-msg" class="admin-msg err"></p>
+        <small>El contenido sensible solo lo ven cuentas de 18 años o más.</small>
+      </section>
+      <nav id="tabs" class="tabs">
+        <button data-view="feed" class="filter active">Inicio</button>
+        <button data-view="people" class="filter user-only">Personas</button>
+        <button data-view="friends" class="filter user-only">Amigos</button>
+        <button data-view="profile" class="filter user-only">Mi perfil</button>
+        <button id="logout" class="filter user-only" type="button">Salir</button>
+      </nav>
+      <div id="content"></div>
+    </div>
+    <div id="toast" class="toast" hidden></div>
+  </main>
+  <footer><a class="brand footer-brand" href="index.html"><span class="brand-mark">V</span><span><strong>VÉLTOR</strong></span></a><div class="footer-links"><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos y normas</a></div></footer>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="posts.js"></script>
+  <script src="social.js"></script>
+</body>
+</html>

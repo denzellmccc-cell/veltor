@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>VÉLTOR — Panel</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="admin-body">
+  <div class="topline"><span>PANEL PRIVADO</span><a class="language" href="index.html">← Volver al sitio</a></div>
+  <main class="admin-wrap">
+    <section id="setup-warning" class="admin-card" hidden>
+      <h2>Falta configurar Firebase</h2>
+      <p>Abre <b>firebase-config.js</b> y pega los datos de tu proyecto. Sigue <b>LEEME_LOGIN.md</b>.</p>
+    </section>
+
+    <section id="login-card" class="admin-card">
+      <h2>Acceso de administrador</h2>
+      <p>Entra con la cuenta de Google cuyo correo configuraste como administrador.</p>
+      <button id="login-google" class="button button-red" type="button">Entrar con Google</button>
+      <p id="login-msg" class="admin-msg"></p>
+    </section>
+
+    <div id="panel" hidden>
+      <section class="admin-card">
+        <div class="admin-row">
+          <div><b id="user-email"></b><br><small>Sesión de administrador</small></div>
+          <button id="logout" class="filter" type="button">Cerrar sesión</button>
+        </div>
+      </section>
+
+      <section class="admin-card">
+        <h2 id="form-title">Nueva publicación</h2>
+        <form id="post-form">
+          <label>Título<input id="f-title" maxlength="140" required></label>
+          <label>Categoría
+            <select id="f-category"><option value="news">Noticias</option><option value="transfers">Fichajes</option><option value="features">Reportajes</option></select>
+          </label>
+          <label>Resumen (aparece en la tarjeta)<textarea id="f-summary" rows="2" maxlength="260" required></textarea></label>
+          <label>Texto completo (deja una línea en blanco entre párrafos)<textarea id="f-body" rows="12" required></textarea></label>
+          <label>URL de imagen (opcional, debe empezar con https://)<input id="f-image" type="url" placeholder="https://..."></label>
+          <label class="check"><input id="f-published" type="checkbox" checked> Publicar ahora (desmarca para guardar como borrador)</label>
+          <div class="admin-row">
+            <button class="button button-red" type="submit" id="save-btn">Guardar</button>
+            <button class="filter" type="button" id="cancel-edit" hidden>Cancelar edición</button>
+          </div>
+          <p id="form-msg" class="admin-msg"></p>
+        </form>
+      </section>
+
+      <section class="admin-card">
+        <h2>Reportes de la comunidad</h2>
+        <p id="report-msg" class="admin-msg"></p>
+        <div id="report-list"></div>
+      </section>
+
+      <section class="admin-card">
+        <h2>Tus noticias</h2>
+        <p id="list-msg" class="admin-msg"></p>
+        <div id="post-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="posts.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

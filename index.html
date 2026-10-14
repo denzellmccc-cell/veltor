@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="VÉLTOR: noticias, resultados, fichajes y reportajes de fútbol internacional.">
+  <meta name="theme-color" content="#101820">
+  <title>VÉLTOR — El fútbol no se detiene</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="topline"><span data-i18n="topline">FÚTBOL INTERNACIONAL · PERIODISMO DEPORTIVO</span><button id="language-toggle" class="language" type="button" aria-label="Switch language">EN</button></div>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="VÉLTOR home"><span class="brand-mark">V</span><span><strong>VÉLTOR</strong><small data-i18n="brandline">FÚTBOL INTERNACIONAL</small></span></a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="#latest" data-i18n="nav-latest">Última hora</a>
+      <a href="#results" data-i18n="nav-results">Resultados</a>
+      <a href="#transfers" data-i18n="nav-transfers">Fichajes</a>
+      <a href="#features" data-i18n="nav-features">Reportajes</a>
+      <a href="comunidad.html">Comunidad</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="live-dot"></span><span data-i18n="hero-kicker">UNA NUEVA MIRADA AL FÚTBOL MUNDIAL</span></p>
+        <h1 data-i18n="hero-title">El fútbol<br><em>no se detiene.</em></h1>
+        <p class="hero-description" data-i18n="hero-description">Noticias, resultados, fichajes e historias que acercan el juego a los aficionados de todo el mundo.</p>
+        <a class="button button-red" href="#latest" data-i18n="hero-button">Explorar noticias <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="hero-art" aria-label="Decorative football-inspired graphic">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="ball"><span>V</span></div>
+        <div class="art-caption"><b>VÉLTOR</b><span data-i18n="art-caption">EL JUEGO GLOBAL</span></div>
+      </div>
+    </section>
+
+    <section class="ticker" aria-label="Editorial promise">
+      <span data-i18n="ticker-one">NOTICIAS CON CONTEXTO</span><i>✳</i><span data-i18n="ticker-two">FICHAJES VERIFICADOS</span><i>✳</i><span data-i18n="ticker-three">HISTORIAS QUE IMPORTAN</span>
+    </section>
+
+    <section class="section" id="latest">
+      <div class="section-heading"><div><p class="eyebrow" data-i18n="latest-kicker">LO QUE PASA</p><h2 data-i18n="latest-title">Últimas noticias</h2></div><span class="section-note" data-i18n="demo-note">Contenido de demostración</span></div>
+      <div class="filter-row" role="group" aria-label="Filter articles">
+        <button class="filter active" data-filter="all" data-i18n="filter-all">Todo</button>
+        <button class="filter" data-filter="news" data-i18n="filter-news">Noticias</button>
+        <button class="filter" data-filter="transfers" data-i18n="filter-transfers">Fichajes</button>
+        <button class="filter" data-filter="features" data-i18n="filter-features">Reportajes</button>
+      </div>
+      <div class="article-grid" id="article-grid">
+        <article class="article-card featured-card" data-category="features">
+          <div class="article-image image-stadium"><span class="image-label" data-i18n="label-feature">REPORTAJE</span><div class="stadium-lines"></div></div>
+          <div class="article-content"><p class="article-meta" data-i18n="meta-feature">ANÁLISIS · 6 MIN DE LECTURA</p><h3 data-i18n="article-one-title">Cómo está cambiando el fútbol para la próxima generación</h3><p data-i18n="article-one-desc">Un ejemplo de reportaje original: contexto, voces expertas y datos para entender el juego más allá del marcador.</p><a href="#about" class="read-link" data-i18n="read-story">Leer historia <span>↗</span></a></div>
+        </article>
+        <article class="article-card" data-category="news">
+          <div class="article-image image-tactics"><span class="image-label" data-i18n="label-news">ANÁLISIS</span><div class="tactics-board">4—3—3</div></div>
+          <div class="article-content"><p class="article-meta" data-i18n="meta-news">TÁCTICA · CONTEXTO</p><h3 data-i18n="article-two-title">La evolución táctica que merece una segunda mirada</h3><p data-i18n="article-two-desc">Una pieza de muestra para explicar ideas, tendencias y decisiones que definen los partidos.</p><a href="#about" class="read-link" data-i18n="read-story">Leer historia <span>↗</span></a></div>
+        </article>
+        <article class="article-card" data-category="transfers">
+          <div class="article-image image-transfer"><span class="image-label" data-i18n="label-transfer">MERCADO</span><div class="transfer-arrows">↗ ↙</div></div>
+          <div class="article-content"><p class="article-meta" data-i18n="meta-transfer">FICHAJES · GUÍA</p><h3 data-i18n="article-three-title">Cómo distinguir un rumor de un fichaje confirmado</h3><p data-i18n="article-three-desc">VÉLTOR diferenciará las negociaciones, los reportes y los anuncios oficiales para informar con claridad.</p><a href="#about" class="read-link" data-i18n="read-story">Leer historia <span>↗</span></a></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="score-section" id="results">
+      <div class="section-heading"><div><p class="eyebrow" data-i18n="scores-kicker">EN EL TERRENO DE JUEGO</p><h2 data-i18n="scores-title">Centro de resultados</h2></div><span class="section-note" data-i18n="manual-note">Ejemplo visual · sin marcadores en vivo</span></div>
+      <div class="score-placeholder"><div class="score-icon">90′</div><div><h3 data-i18n="scores-placeholder-title">Aquí vivirán los partidos</h3><p data-i18n="scores-placeholder-desc">En la primera versión, añade marcadores comprobados manualmente. Más adelante podrás integrar una fuente de datos autorizada.</p></div><span class="pill" data-i18n="coming-soon">PRÓXIMAMENTE</span></div>
+    </section>
+
+    <section class="transfer-strip" id="transfers">
+      <div><p class="eyebrow" data-i18n="transfer-kicker">MERCADO DE FICHAJES</p><h2 data-i18n="transfer-title">Hechos, no humo.</h2><p data-i18n="transfer-desc">Los rumores se etiquetan como rumores. Los fichajes solo se dan por confirmados cuando existe una fuente fiable.</p></div>
+      <a href="#latest" class="button button-light" data-i18n="transfer-button">Ver cobertura <span aria-hidden="true">↗</span></a>
+    </section>
+
+    <section class="section about-section" id="features">
+      <div class="section-heading"><div><p class="eyebrow" data-i18n="features-kicker">MÁS ALLÁ DEL MARCADOR</p><h2 data-i18n="features-title">Historias que dejan huella</h2></div></div>
+      <p class="about-copy" data-i18n="features-desc">VÉLTOR aspira a combinar actualidad rápida con periodismo deportivo original: entrevistas, perfiles, reportajes y explicaciones que ayuden a comprender el fútbol mundial.</p>
+    </section>
+  </main>
+
+  <footer id="about">
+    <a class="brand footer-brand" href="#"><span class="brand-mark">V</span><span><strong>VÉLTOR</strong><small data-i18n="brandline">FÚTBOL INTERNACIONAL</small></span></a>
+    <p data-i18n="footer-note">Un proyecto editorial independiente en construcción.</p>
+    <div class="footer-links"><a href="mailto:companyveltor@gmail.com" data-i18n="contact">Contacto</a><a href="#about" data-i18n="editorial">Criterios editoriales</a><a href="comunidad.html">Comunidad</a><a href="privacidad.html">Privacidad</a><a href="terminos.html">Términos</a><a href="admin.html" rel="nofollow">Admin</a></div>
+    <small class="copyright">© <span id="year"></span> VÉLTOR. <span data-i18n="rights">Todos los derechos reservados.</span></small>
+  </footer>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="posts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
