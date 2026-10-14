@@ -8,6 +8,36 @@
 
   const toast = (t) => { const m = $("toast"); m.textContent = t; m.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => (m.hidden = true), 2600); };
   const https = (u) => (/^https:\/\//i.test(u || "") ? u : "");
+  const JPEG = "data:image/jpeg;base64,";
+  const dataImg = (v) => (typeof v === "string" && v.startsWith(JPEG) && v.length < 320000 ? v : "");
+  const imgSrc = (p) => dataImg(p.imageData) || https(p.imageUrl);
+
+  // Reduce la foto en el navegador (y borra metadatos como el GPS) antes de guardarla.
+  function compress(file, max, square, limit) {
+    return new Promise((resolve, reject) => {
+      if (!file || !/^image\//.test(file.type)) return reject(new Error("Elige una imagen."));
+      if (file.size > 20 * 1024 * 1024) return reject(new Error("La imagen pesa demasiado (máx. 20 MB)."));
+      const url = URL.createObjectURL(file), img = new Image();
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("No se pudo leer esa imagen. Prueba con JPG o PNG.")); };
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let size = max, q = 0.8;
+        for (let i = 0; i < 6; i++) {
+          const c = document.createElement("canvas"), ctx = c.getContext("2d");
+          let sx = 0, sy = 0, sw = img.width, sh = img.height;
+          if (square) { const m = Math.min(sw, sh); sx = (sw - m) / 2; sy = (sh - m) / 2; sw = sh = m; c.width = c.height = Math.min(size, m); }
+          else { const k = Math.min(1, size / Math.max(sw, sh)); c.width = Math.round(sw * k); c.height = Math.round(sh * k); }
+          ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height);
+          const out = c.toDataURL("image/jpeg", q);
+          if (out.length <= limit) return resolve(out);
+          size = Math.round(size * 0.8); q = Math.max(0.5, q - 0.08);
+        }
+        reject(new Error("La imagen sigue siendo muy pesada. Prueba con otra."));
+      };
+      img.src = url;
+    });
+  }
   const fail = (e) => toast(e && e.code === "permission-denied" ? "No tienes permiso para esa acción." : "Error: " + ((e && (e.code || e.message)) || "desconocido"));
   const btn = (label, fn, cls) => { const b = el("button", cls || "filter", label); b.type = "button"; b.addEventListener("click", fn); return b; };
   const empty = (t) => el("p", "muted", t);
@@ -20,7 +50,7 @@
     return (cache[uid] = cache[uid] || { displayName: "Usuario", bio: "", photoURL: "" });
   }
   function avatar(p) {
-    const a = el("span", "avatar"), u = https(p.photoURL);
+    const a = el("span", "avatar"), u = dataImg(p.photoData) || https(p.photoURL);
     if (u) a.style.backgroundImage = 'url("' + encodeURI(u) + '")'; else a.textContent = (p.displayName || "?")[0].toUpperCase();
     return a;
   }
@@ -51,7 +81,7 @@
         const ref = db.collection("users").doc(user.uid);
         if (!(await ref.get()).exists) {
           if (!ageGroup) { await auth.signOut(); $("login-msg").textContent = "Para crear tu cuenta indica tu edad y acepta los términos."; return; }
-          await ref.set({ displayName: (user.displayName || "Usuario").slice(0, 60), bio: "", photoURL: https(user.photoURL).slice(0, 500), adult: ageGroup === "adult", termsAcceptedAt: TS() });
+          await ref.set({ displayName: (user.displayName || "Usuario").slice(0, 60), bio: "", photoURL: https(user.photoURL).slice(0, 500), photoData: "", adult: ageGroup === "adult", termsAcceptedAt: TS() });
         }
         meAdult = (await profile(user.uid)).adult === true;
         adminFlag = await db.collection("banned").limit(1).get().then(() => true, () => false);
@@ -128,17 +158,27 @@
   // ---------- Publicaciones ----------
   function composer(onDone) {
     const box = el("div", "admin-card composer");
-    const text = el("textarea"); text.rows = 3; text.maxLength = 1000; text.placeholder = "¿Qué quieres compartir del fútbol?";
-    const img = el("input"); img.type = "url"; img.placeholder = "URL de imagen (opcional, https://...)";
+    const text = el("textarea"); text.rows = 3; text.maxLength = 1000; text.placeholder = "Escribe un pie de foto o lo que quieras compartir del fútbol…";
+    const file = el("input"); file.type = "file"; file.accept = "image/*";
+    const prev = el("img", "post-img"); prev.hidden = true; prev.alt = "";
+    let data = "";
+    file.addEventListener("change", async () => {
+      data = ""; prev.hidden = true;
+      if (!file.files[0]) return;
+      try { data = await compress(file.files[0], 1080, false, 280000); prev.src = data; prev.hidden = false; }
+      catch (e) { file.value = ""; toast(e.message); }
+    });
     const sens = el("label", "check"), cb = el("input"); cb.type = "checkbox";
     sens.append(cb, document.createTextNode(" Contenido sensible (violencia, lenguaje fuerte o temas delicados). Solo lo verán cuentas de 18+"));
     const go1 = btn("Publicar", async () => {
-      const t = text.value.trim(), i = img.value.trim();
-      if (!t) return toast("Escribe algo primero.");
-      if (i && !https(i)) return toast("La imagen debe empezar con https://");
-      try { await db.collection("community").add({ authorId: me.uid, text: t, imageUrl: i, sensitive: cb.checked, createdAt: TS() }); text.value = ""; img.value = ""; cb.checked = false; toast("Publicado ✔"); onDone(); } catch (e) { fail(e); }
+      const t = text.value.trim();
+      if (!t && !data) return toast("Escribe algo o elige una foto.");
+      try {
+        await db.collection("community").add({ authorId: me.uid, text: t, imageData: data, sensitive: cb.checked, createdAt: TS() });
+        text.value = ""; file.value = ""; data = ""; prev.hidden = true; cb.checked = false; toast("Publicado ✔"); onDone();
+      } catch (e) { fail(e); }
     }, "button button-red");
-    box.append(text, img, sens, go1);
+    box.append(text, el("small", "muted", "📷 Foto (opcional): elige una de tu galería"), file, prev, sens, go1);
     return box;
   }
 
@@ -150,8 +190,10 @@
     const who = el("button", "linkbtn", pr.displayName); who.type = "button"; who.addEventListener("click", () => go("profile", p.authorId));
     const info = el("div", ""); info.append(who, el("br"), el("small", "", when(p.createdAt)));
     head.append(avatar(pr), info);
-    const body = el("div", "post-body"); card.append(head, body); body.appendChild(el("p", "post-text", p.text));
-    if (https(p.imageUrl)) { const im = el("img", "post-img"); im.src = p.imageUrl; im.loading = "lazy"; im.referrerPolicy = "no-referrer"; im.alt = ""; body.appendChild(im); }
+    const body = el("div", "post-body"); card.append(head, body); 
+    const src = imgSrc(p);
+    if (src) { const im = el("img", "post-img"); im.src = src; im.loading = "lazy"; im.referrerPolicy = "no-referrer"; im.alt = ""; body.appendChild(im); }
+    if (p.text) body.appendChild(el("p", "post-text", p.text));
     if (p.sensitive) { body.classList.add("hidden"); const warn = btn(meAdult ? "⚠ Contenido sensible · Pulsa para ver" : "⚠ Contenido sensible · solo para mayores de 18 con sesión iniciada", () => { if (!meAdult) return toast("Este contenido es solo para cuentas de 18 años o más."); body.classList.remove("hidden"); warn.remove(); }, "filter danger"); card.insertBefore(warn, body); }
 
     const bar = el("div", "post-actions");
@@ -205,11 +247,18 @@
       const f = el("div", "admin-card"); f.appendChild(el("h3", "", "Editar perfil"));
       const name = el("input"); name.value = pr.displayName; name.maxLength = 60;
       const bio = el("textarea"); bio.rows = 3; bio.maxLength = 300; bio.value = pr.bio; bio.placeholder = "Biografía (equipo favorito, ciudad…)";
-      const ph = el("input"); ph.type = "url"; ph.value = pr.photoURL; ph.placeholder = "URL de foto de perfil (https://…)";
-      f.append(name, bio, ph, btn("Guardar", async () => {
+      let newPhoto = pr.photoData || "";
+      const prevA = avatar(pr); prevA.classList.add("big");
+      const file = el("input"); file.type = "file"; file.accept = "image/*";
+      file.addEventListener("change", async () => {
+        if (!file.files[0]) return;
+        try { newPhoto = await compress(file.files[0], 256, true, 40000); prevA.style.backgroundImage = 'url("' + newPhoto + '")'; prevA.textContent = ""; }
+        catch (e) { file.value = ""; toast(e.message); }
+      });
+      const rm = btn("Quitar foto subida", () => { newPhoto = ""; file.value = ""; prevA.style.backgroundImage = ""; prevA.textContent = (pr.displayName || "?")[0].toUpperCase(); });
+      f.append(prevA, el("small", "muted", "Cambiar foto de perfil: elige una de tu galería"), file, rm, name, bio, btn("Guardar", async () => {
         if (!name.value.trim()) return toast("El nombre no puede estar vacío.");
-        if (ph.value.trim() && !https(ph.value.trim())) return toast("La foto debe empezar con https://");
-        try { const d = { displayName: name.value.trim(), bio: bio.value.trim(), photoURL: ph.value.trim() }; await db.collection("users").doc(uid).update(d); cache[uid] = Object.assign({}, pr, d); toast("Perfil guardado ✔"); go("profile", uid); } catch (e) { fail(e); }
+        try { const d = { displayName: name.value.trim(), bio: bio.value.trim(), photoURL: pr.photoURL || "", photoData: newPhoto }; await db.collection("users").doc(uid).update(d); cache[uid] = Object.assign({}, pr, d); toast("Perfil guardado ✔"); go("profile", uid); } catch (e) { fail(e); }
       }, "button button-red"));
       f.appendChild(btn("Eliminar mi cuenta", deleteAccount, "filter danger"));
       c.appendChild(f);
